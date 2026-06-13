@@ -1,4 +1,4 @@
-import { getRoom } from "../rooms.js";
+import { getRoom } from "../handlers/rooms.js";
 
 export function registerChatHandlers(io, socket) {
     socket.on("chat-message", ({ roomId, username, text }) => {

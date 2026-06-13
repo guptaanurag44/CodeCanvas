@@ -1,4 +1,4 @@
-import { getOrCreateRoom, addUserToRoom, removeUserFromAllRooms } from "../rooms.js";
+import { getOrCreateRoom, addUserToRoom, removeUserFromAllRooms } from "../handlers/rooms.js";
 
 export function registerRoomHandlers(io, socket) {
     socket.on("join", ({ username, roomId }) => {

@@ -1,4 +1,4 @@
-import { getRoom } from "../rooms.js";
+import { getRoom } from "../handlers/rooms.js";
 
 export function registerCodeHandlers(io, socket) {
     socket.on("code-change", ({ roomId, code }) => {
