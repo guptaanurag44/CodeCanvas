@@ -31,3 +31,12 @@
 - Server-side enforcement: code-change ignored if sender's role !== "editor"
 (client readOnly is UX only; real security is server-side check)
 - Monaco's built-in readOnly mode provides "cannot edit" feedback automatically
+
+## Phase 5 — Code Execution (Done)
+- Judge0 CE public API (https://ce.judge0.com), no auth required
+- Server-side execution: submit (async, base64) -> poll for result (max 10x1s)
+- Supports: JavaScript, Python, C++, C, Java, Go
+- room.language: shared state (like code), synced on join + broadcast on change
+- "code-running"/"code-output" broadcast to whole room (collaborative - everyone sees who ran what)
+- Output panel shows stdout/stderr/compile_output, attributes run to username ("You" for self)
+

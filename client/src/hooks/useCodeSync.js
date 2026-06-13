@@ -3,6 +3,7 @@ import { socket } from "../socket";
 
 export function useCodeSync() {
     const [code, setCode] = useState("");
+    const [language, setLanguage] = useState("javascript");
     const isRemoteChange = useRef(false);
 
     useEffect(() => {
@@ -16,9 +17,13 @@ export function useCodeSync() {
             setCode(newCode);
         });
 
+        socket.on("sync-language", (lang) => setLanguage(lang));
+        socket.on("language-change", (lang) => setLanguage(lang));
         return () => {
             socket.off("sync-code");
             socket.off("code-change");
+            socket.off("sync-language");
+            socket.off("language-change");
         };
     }, []);
 
@@ -31,6 +36,9 @@ export function useCodeSync() {
         setCode(value);
         socket.emit("code-change", { roomId, code: value });
     };
+    const changeLanguage = (roomId, newLanguage) => {
+        socket.emit("language-change", { roomId, language: newLanguage });
+    };
 
-    return { code, handleEditorChange };
+    return { code, handleEditorChange, language, changeLanguage };
 }

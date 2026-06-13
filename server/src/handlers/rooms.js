@@ -12,7 +12,7 @@ const COLORS = [
 export function getOrCreateRoom(roomId) {
     let room = rooms.get(roomId);
     if (!room) {
-        room = { users: [], code: "", messages: [] };
+       room = { users: [], code: "", messages: [], language: "javascript" };
         rooms.set(roomId, room);
     }
     return room;
@@ -44,7 +44,7 @@ export function removeUserFromAllRooms(socketId) {
         const updatedUsers = room.users.filter((u) => u.socketId !== socketId);
 
         if (updatedUsers.length !== room.users.length) {
-            
+
             if (removedUser?.isHost && updatedUsers.length > 0) {
                 updatedUsers[0].isHost = true;
                 updatedUsers[0].role = "editor";

@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import { registerRoomHandlers } from "./socket/roomHandlers.js";
 import { registerCodeHandlers } from "./socket/codeHandlers.js";
 import { registerChatHandlers } from "./socket/chatHandlers.js";
+import { registerExecuteHandlers } from "./socket/executeHandlers.js";
 
 const app = express();
 app.use(cors());
@@ -24,6 +25,8 @@ io.on("connection", (socket) => {
     registerRoomHandlers(io, socket);
     registerCodeHandlers(io, socket);
     registerChatHandlers(io, socket);
+    registerExecuteHandlers(io, socket);
+
 });
 
 const PORT = 5000;

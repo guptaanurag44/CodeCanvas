@@ -16,6 +16,7 @@ export function registerRoomHandlers(io, socket) {
         io.to(roomId).emit("user-list", room.users);
         socket.emit("sync-code", room.code);
         socket.emit("sync-messages", room.messages);
+        socket.emit("sync-language", room.language);
     });
 
     socket.on("change-role", ({ roomId, targetSocketId, newRole }) => {
@@ -23,14 +24,21 @@ export function registerRoomHandlers(io, socket) {
         if (!room) return;
 
         const requester = room.users.find((u) => u.socketId === socket.id);
-        if (!requester?.isHost) return; 
+        if (!requester?.isHost) return;
 
         const target = room.users.find((u) => u.socketId === targetSocketId);
         if (!target) return;
-        if (target.isHost) return; 
+        if (target.isHost) return;
 
         target.role = newRole;
         io.to(roomId).emit("user-list", room.users);
+    });
+
+    socket.on("language-change", ({ roomId, language }) => {
+        const room = getRoom(roomId);
+        if (!room) return;
+        room.language = language;
+        io.to(roomId).emit("language-change", language);
     });
 
     socket.on("disconnect", () => {

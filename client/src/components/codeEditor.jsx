@@ -3,7 +3,15 @@ import { useRef, useEffect } from "react";
 import throttle from "lodash.throttle";
 import { socket } from "../socket";
 
-export function CodeEditor({ code, onChange, roomId, remoteCursors, users,readOnly }) {
+export function CodeEditor({
+    code,
+    onChange,
+    roomId,
+    remoteCursors,
+    users,
+    readOnly,
+    language,
+}) {
     const editorRef = useRef(null);
     const decorationsRef = useRef([]);
 
@@ -82,7 +90,7 @@ export function CodeEditor({ code, onChange, roomId, remoteCursors, users,readOn
         <div style={{ flex: 1 }}>
             <Editor
                 height="100%"
-                language="cpp"
+                language={language}
                 value={code}
                 onChange={onChange}
                 onMount={handleMount}
