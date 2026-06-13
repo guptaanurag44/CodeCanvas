@@ -13,7 +13,6 @@ export function useSocketEvents() {
         socket.on("user-list", (userList) => {
             setUsers(userList);
 
-            // remove cursors for users who left
             setRemoteCursors((prev) => {
                 const activeIds = new Set(userList.map((u) => u.socketId));
                 const filtered = {};
