@@ -1,4 +1,9 @@
-import { getOrCreateRoom, addUserToRoom, removeUserFromAllRooms } from "../handlers/rooms.js";
+import {
+    getOrCreateRoom,
+    addUserToRoom,
+    removeUserFromAllRooms,
+    getRoom,
+} from "../handlers/rooms.js";
 
 export function registerRoomHandlers(io, socket) {
     socket.on("join", ({ username, roomId }) => {
@@ -11,6 +16,21 @@ export function registerRoomHandlers(io, socket) {
         io.to(roomId).emit("user-list", room.users);
         socket.emit("sync-code", room.code);
         socket.emit("sync-messages", room.messages);
+    });
+
+    socket.on("change-role", ({ roomId, targetSocketId, newRole }) => {
+        const room = getRoom(roomId);
+        if (!room) return;
+
+        const requester = room.users.find((u) => u.socketId === socket.id);
+        if (!requester?.isHost) return; 
+
+        const target = room.users.find((u) => u.socketId === targetSocketId);
+        if (!target) return;
+        if (target.isHost) return; 
+
+        target.role = newRole;
+        io.to(roomId).emit("user-list", room.users);
     });
 
     socket.on("disconnect", () => {

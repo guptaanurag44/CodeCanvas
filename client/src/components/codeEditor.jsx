@@ -3,7 +3,7 @@ import { useRef, useEffect } from "react";
 import throttle from "lodash.throttle";
 import { socket } from "../socket";
 
-export function CodeEditor({ code, onChange, roomId, remoteCursors, users }) {
+export function CodeEditor({ code, onChange, roomId, remoteCursors, users,readOnly }) {
     const editorRef = useRef(null);
     const decorationsRef = useRef([]);
 
@@ -87,6 +87,7 @@ export function CodeEditor({ code, onChange, roomId, remoteCursors, users }) {
                 onChange={onChange}
                 onMount={handleMount}
                 theme="vs-dark"
+                options={{ readOnly: readOnly }}
             />
         </div>
     );

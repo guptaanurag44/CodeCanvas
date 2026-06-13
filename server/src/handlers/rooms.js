@@ -25,7 +25,8 @@ export function getRoom(roomId) {
 export function addUserToRoom(roomId, socketId, username) {
     const room = getOrCreateRoom(roomId);
     const color = COLORS[room.users.length % COLORS.length];
-    room.users.push({ socketId, username, color });
+    const isHost = room.users.length === 0
+    room.users.push({ socketId, username, color, isHost, role:isHost ?"editor" :"viewer" });
     return room;
 }
 

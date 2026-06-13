@@ -4,6 +4,10 @@ export function registerCodeHandlers(io, socket) {
     socket.on("code-change", ({ roomId, code }) => {
         const room = getRoom(roomId);
         if (!room) return;
+
+        const user = room.users.find((u) => u.socketId === socket.id);
+        if (user?.role !== "editor") return; 
+
         room.code = code;
         socket.to(roomId).emit("code-change", code);
     });

@@ -7,6 +7,7 @@ import { JoinForm } from "./components/JoinForm";
 import { RoomHeader } from "./components/RoomHeader";
 import { CodeEditor } from "./components/CodeEditor";
 import { ChatPanel } from "./components/ChatPanel";
+import { socket } from "./socket";
 
 function App() {
     const [roomId, setRoomId] = useState("");
@@ -18,6 +19,9 @@ function App() {
     const { code, handleEditorChange } = useCodeSync();
     const { messages, typingUsers, sendMessage, handleTyping } = useChat();
 
+    const currentUser = users.find((u) => u.socketId === socket.id);
+    const isViewer = currentUser?.role === "viewer";
+    const isHost = currentUser?.isHost === true;
     const handleJoin = (roomId, username) => {
         setRoomId(roomId);
         setUsername(username);
@@ -37,7 +41,7 @@ function App() {
                 height: "100vh",
             }}
         >
-            <RoomHeader roomId={roomId} users={users} />
+            <RoomHeader roomId={roomId} users={users} isHost={isHost} />
             <div style={{ display: "flex", flex: 1 }}>
                 <CodeEditor
                     code={code}
@@ -45,6 +49,7 @@ function App() {
                     roomId={roomId}
                     remoteCursors={remoteCursors}
                     users={users}
+                    readOnly={isViewer}
                 />
                 <ChatPanel
                     messages={messages}
