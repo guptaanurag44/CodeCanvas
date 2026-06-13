@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { useSocketEvents } from "./hooks/useSocketEvents";
+import { useSocketConnection } from "./hooks/useSocketConnection";
+import { useRoomPresence } from "./hooks/useRoomPresence";
+import { useCodeSync } from "./hooks/useCodeSync";
+import { useChat } from "./hooks/useChat";
 import { JoinForm } from "./components/JoinForm";
 import { RoomHeader } from "./components/RoomHeader";
 import { CodeEditor } from "./components/CodeEditor";
@@ -10,17 +13,10 @@ function App() {
     const [username, setUsername] = useState("");
     const [joined, setJoined] = useState(false);
 
-    const {
-        users,
-        code,
-        remoteCursors,
-        messages,
-        typingUsers,
-        joinRoom,
-        handleEditorChange,
-        sendMessage,
-        handleTyping,
-    } = useSocketEvents();
+    useSocketConnection();
+    const { users, remoteCursors, joinRoom } = useRoomPresence();
+    const { code, handleEditorChange } = useCodeSync();
+    const { messages, typingUsers, sendMessage, handleTyping } = useChat();
 
     const handleJoin = (roomId, username) => {
         setRoomId(roomId);
