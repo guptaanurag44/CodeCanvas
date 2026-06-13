@@ -4,12 +4,25 @@ import { socket } from "../socket";
 export function useSocketEvents() {
     const [users, setUsers] = useState([]);
     const [code, setCode] = useState("");
+    const [remoteCursors, setRemoteCursors] = useState({});
     const isRemoteChange = useRef(false);
 
     useEffect(() => {
         socket.connect();
 
-        socket.on("user-list", (userList) => setUsers(userList));
+        socket.on("user-list", (userList) => {
+            setUsers(userList);
+
+            // remove cursors for users who left
+            setRemoteCursors((prev) => {
+                const activeIds = new Set(userList.map((u) => u.socketId));
+                const filtered = {};
+                for (const [id, pos] of Object.entries(prev)) {
+                    if (activeIds.has(id)) filtered[id] = pos;
+                }
+                return filtered;
+            });
+        });
 
         socket.on("sync-code", (initialCode) => {
             isRemoteChange.current = true;
@@ -20,8 +33,9 @@ export function useSocketEvents() {
             isRemoteChange.current = true;
             setCode(newCode);
         });
-        socket.on("cursor-move", (data) => {
-            console.log("received cursor-move:", data);
+
+        socket.on("cursor-move", ({ socketId, position }) => {
+            setRemoteCursors((prev) => ({ ...prev, [socketId]: position }));
         });
 
         return () => {
@@ -47,5 +61,5 @@ export function useSocketEvents() {
         socket.emit("code-change", { roomId, code: value });
     };
 
-    return { users, code, joinRoom, handleEditorChange };
+    return { users, code, remoteCursors, joinRoom, handleEditorChange };
 }

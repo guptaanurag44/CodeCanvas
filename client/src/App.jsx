@@ -7,7 +7,7 @@ import { CodeEditor } from "./components/CodeEditor";
 function App() {
     const [roomId, setRoomId] = useState("");
     const [joined, setJoined] = useState(false);
-    const { users, code, joinRoom, handleEditorChange } = useSocketEvents();
+    const { users, code, joinRoom, handleEditorChange, remoteCursors } = useSocketEvents();
 
     const handleJoin = (roomId, username) => {
         setRoomId(roomId);
@@ -32,6 +32,8 @@ function App() {
                 code={code}
                 onChange={(value) => handleEditorChange(value, roomId)}
                 roomId={roomId}
+                remoteCursors={remoteCursors}
+                users={users}
             />
         </div>
     );
