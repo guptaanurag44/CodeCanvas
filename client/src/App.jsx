@@ -10,6 +10,8 @@ import { CodeEditor } from "./components/CodeEditor";
 import { ChatPanel } from "./components/ChatPanel";
 import { OutputPanel } from "./components/OutputPanel";
 import { socket } from "./socket";
+import { useAI } from "./hooks/useAI";
+import {AIPanel} from "./components/AIPanel";
 
 function App() {
     const [roomId, setRoomId] = useState("");
@@ -18,10 +20,10 @@ function App() {
 
     useSocketConnection();
     const { users, remoteCursors, joinRoom } = useRoomPresence();
-    const { code, language, handleEditorChange, changeLanguage } =
-        useCodeSync();
+    const { code, language, handleEditorChange, changeLanguage } =useCodeSync();
     const { messages, typingUsers, sendMessage, handleTyping } = useChat();
     const { output, running, runCode, runner } = useCodeExecution();
+    const { aiMessages, streamingText, isStreaming, aiEnabled, sendAIRequest, toggleAI } = useAI(roomId);
 
     const currentUser = users.find((u) => u.socketId === socket.id);
     const isViewer = currentUser?.role === "viewer";
@@ -107,6 +109,16 @@ function App() {
                     username={username}
                     onSend={(text) => sendMessage(roomId, username, text)}
                     onTyping={() => handleTyping(roomId, username)}
+                />
+                <AIPanel
+                    username={username}
+                    isHost={users.find(u => u.socketId === socket.id)?.isHost}
+                    aiMessages={aiMessages}
+                    streamingText={streamingText}
+                    isStreaming={isStreaming}
+                    aiEnabled={aiEnabled}
+                    sendAIRequest={sendAIRequest}
+                    toggleAI={toggleAI}
                 />
             </div>
         </div>

@@ -12,9 +12,23 @@ const COLORS = [
 export function getOrCreateRoom(roomId) {
     let room = rooms.get(roomId);
     if (!room) {
-       room = { users: [], code: "", messages: [], language: "javascript" };
+    room = {
+        users: [],
+        code: "",
+        messages: [],
+        aiMessages: [],
+        language: "javascript",
+        aiEnabled: true,};
+
         rooms.set(roomId, room);
     }
+    return room;
+}
+
+export function setRoomMode(roomId, mode) {
+    const room = rooms.get(roomId);
+    if (!room) return null;
+    room.mode = mode;
     return room;
 }
 

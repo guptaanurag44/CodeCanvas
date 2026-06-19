@@ -40,3 +40,9 @@
 - "code-running"/"code-output" broadcast to whole room (collaborative - everyone sees who ran what)
 - Output panel shows stdout/stderr/compile_output, attributes run to username ("You" for self)
 
+=======
+### Phase 6 — AI Code Assistance (Done)
+- Added `aiHandlers.js` (server) — calls Gemini 1.5 Flash, streams chunks via `ai-chunk` socket events, relays `ai-done` when complete
+- Added `useAI.js` + `AIPanel.jsx` (client) — displays streaming responses with typewriter effect, per-user "Share Code Context" toggle
+- Host can disable AI for room via `toggle-ai` event — server-side isHost check, same auth pattern as change-role
+- Key bugs: nested `socket.on` inside emit function (stacked listeners), StrictMode double-mount broke nested setState in `ai-done` (fixed with `useRef` + guard), Monaco `onChange` returning `undefined` on select-delete (fixed with `?? ""`)>>>>>>> 6b83983 (add gitignore files, remove .env from tracking)
