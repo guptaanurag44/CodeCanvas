@@ -20,6 +20,7 @@ function App() {
     const [roomId, setRoomId] = useState("");
     const [username, setUsername] = useState("");
     const [joined, setJoined] = useState(false);
+    const [stdin, setStdin] = useState("");
 
     useSocketConnection();
     const { users, remoteCursors, joinRoom } = useRoomPresence();
@@ -99,7 +100,9 @@ function App() {
                     <option value="go">Go</option>
                 </select>
                 <button
-                    onClick={() => runCode(roomId, code, language, username)}
+                    onClick={() =>
+                        runCode(roomId, code, language, username, stdin)
+                    }
                     disabled={running || isViewer}
                 >
                     {running ? "Running..." : "Run"}
@@ -148,6 +151,8 @@ function App() {
                         running={running}
                         runner={runner}
                         currentUsername={username}
+                        stdin={stdin}
+                        onStdinChange={setStdin}
                     />
                 </div>
                 <ChatPanel
@@ -176,7 +181,10 @@ function App() {
                     camOn={camOn}
                     onToggleMic={toggleMic}
                     onToggleCam={toggleCam}
-                    onEndSession={() => { endSession(); setJoined(false); }}
+                    onEndSession={() => {
+                        endSession();
+                        setJoined(false);
+                    }}
                 />
             </div>
         </div>

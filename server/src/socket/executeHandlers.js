@@ -12,27 +12,33 @@ const LANGUAGE_IDS = {
 const JUDGE0_URL = "https://ce.judge0.com";
 
 export function registerExecuteHandlers(io, socket) {
-    socket.on("run-code", async ({ roomId, code, language, username }) => {
-        const languageId = LANGUAGE_IDS[language];
-        if (!languageId) return;
+    socket.on(
+        "run-code",
+        async ({ roomId, code, language, username, stdin }) => {
+            const languageId = LANGUAGE_IDS[language];
+            if (!languageId) return;
 
-        io.to(roomId).emit("code-running", { running: true, username });
+            io.to(roomId).emit("code-running", { running: true, username });
 
-        try {
-            const output = await executeCode(code, languageId);
-            io.to(roomId).emit("code-output", { ...output, username });
-        } catch (err) {
-            io.to(roomId).emit("code-output", {
-                error: "Execution failed: " + err.message,
-                username,
-            });
-        } finally {
-            io.to(roomId).emit("code-running", { running: false, username });
-        }
-    });
+            try {
+                const output = await executeCode(code, languageId, stdin);
+                io.to(roomId).emit("code-output", { ...output, username });
+            } catch (err) {
+                io.to(roomId).emit("code-output", {
+                    error: "Execution failed: " + err.message,
+                    username,
+                });
+            } finally {
+                io.to(roomId).emit("code-running", {
+                    running: false,
+                    username,
+                });
+            }
+        },
+    );
 }
 
-async function executeCode(code, languageId) {
+async function executeCode(code, languageId, stdin = "") {
     const createRes = await fetch(
         `${JUDGE0_URL}/submissions?base64_encoded=true&wait=false`,
         {
@@ -41,6 +47,7 @@ async function executeCode(code, languageId) {
             body: JSON.stringify({
                 source_code: Buffer.from(code).toString("base64"),
                 language_id: languageId,
+                stdin: Buffer.from(stdin).toString("base64"),
             }),
         },
     );

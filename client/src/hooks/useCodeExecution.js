@@ -19,9 +19,9 @@ export function useCodeExecution() {
         };
     }, []);
 
-    const runCode = (roomId, code, language, username) => {
+    const runCode = (roomId, code, language, username, stdin = "") => {
         setOutput(null);
-        socket.emit("run-code", { roomId, code, language, username });
+        socket.emit("run-code", { roomId, code, language, username, stdin });
     };
 
     return { output, running, runner, runCode };
