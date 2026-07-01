@@ -12,13 +12,15 @@ const COLORS = [
 export function getOrCreateRoom(roomId) {
     let room = rooms.get(roomId);
     if (!room) {
-    room = {
-        users: [],
-        code: "",
-        messages: [],
-        aiMessages: [],
-        language: "javascript",
-        aiEnabled: true,};
+        room = {
+            users: [],
+            code: "",
+            messages: [],
+            aiMessages: [],
+            language: "javascript",
+            aiEnabled: true,
+            mode: "collab",
+        };
 
         rooms.set(roomId, room);
     }
@@ -58,7 +60,6 @@ export function removeUserFromAllRooms(socketId) {
         const updatedUsers = room.users.filter((u) => u.socketId !== socketId);
 
         if (updatedUsers.length !== room.users.length) {
-
             if (removedUser?.isHost && updatedUsers.length > 0) {
                 updatedUsers[0].isHost = true;
                 updatedUsers[0].role = "editor";

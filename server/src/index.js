@@ -7,11 +7,18 @@ import { registerCodeHandlers } from "./socket/codeHandlers.js";
 import { registerChatHandlers } from "./socket/chatHandlers.js";
 import { registerExecuteHandlers } from "./socket/executeHandlers.js";
 import { registerAIHandlers } from "./socket/aiHandlers.js";
+import {registerWebRTCHandlers} from './socket/webRTCHandlers.js'
 
 const app = express();
 app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader("ngrok-skip-browser-warning", "true");
+  next();
+});
 
 const server = createServer(app);
+
+
 
 const io = new Server(server, {
     cors: {
@@ -28,6 +35,7 @@ io.on("connection", (socket) => {
     registerChatHandlers(io, socket);
     registerExecuteHandlers(io, socket);
     registerAIHandlers(io, socket);
+    registerWebRTCHandlers(io, socket);
 });
 
 const PORT = 5000;

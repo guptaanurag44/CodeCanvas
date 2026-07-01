@@ -46,3 +46,15 @@
 - Added `useAI.js` + `AIPanel.jsx` (client) — displays streaming responses with typewriter effect, per-user "Share Code Context" toggle
 - Host can disable AI for room via `toggle-ai` event — server-side isHost check, same auth pattern as change-role
 - Key bugs: nested `socket.on` inside emit function (stacked listeners), StrictMode double-mount broke nested setState in `ai-done` (fixed with `useRef` + guard), Monaco `onChange` returning `undefined` on select-delete (fixed with `?? ""`)>>>>>>> 6b83983 (add gitignore files, remove .env from tracking)
+
+## Phase 9 — WebRTC Video (Interview Mode)**
+
+- Added peer-to-peer video calling that activates exclusively in interview mode, selected by the host at join time
+- WebRTC connection uses STUN-based ICE negotiation — no media touches the server, server acts as pure signaling relay
+- Candidate (second joiner) initiates the offer automatically when both participants are in the room
+- Both participants get mic and camera toggles during the call
+- Only the host can end the session — candidate has no end call button, mirroring a real interview environment
+- Ending the session stops all media tracks, closes the peer connection, and redirects both participants back to home screen
+- Video call is P2P between interviewer and candidate only — additional observers can join as viewers without affecting the call
+- Mode is locked at join time, cannot be toggled mid-session
+- STUN only, no TURN server — works on standard networks, acceptable limitation for a portfolio demo

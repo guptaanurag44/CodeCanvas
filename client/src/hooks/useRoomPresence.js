@@ -29,9 +29,9 @@ export function useRoomPresence() {
         };
     }, []);
 
-    const joinRoom = (roomId, username) => {
-        socket.emit("join", { roomId, username });
-    };
+const joinRoom = (roomId, username, mode = "collab") => {
+  socket.emit("join", { username, roomId, mode });
+};
 
     return { users, remoteCursors, joinRoom };
 }
